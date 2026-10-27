@@ -398,7 +398,7 @@ function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 lg:grid-cols-[1fr_1fr] lg:px-10">
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-[#5E7C9D]">Inspire Ministry</p>
-          <h4 className="mt-4 text-2xl font-light">Inspire a Soul with the Word Inspire all Church with a Soul</h4>
+          <h4 className="mt-4 text-2xl font-light">Inspire One Soul with The Word</h4>
           <p className="mt-4 max-w-xl leading-7 text-[#4A6787]">
             인스파이어(inspire)는 하나님의 말씀을 통해 한 영혼을 일깨우고(inspire), 그를 통해 모든 교회를 격려하여(inspire) 건강하게 세우는 말씀사역단체입니다.
           </p>
@@ -779,7 +779,7 @@ function ForAllChurchPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
         <section ref={registerRef("mission-support")}>
           <SplitSection
             id="mission-support"
-            eyebrow="Support Ministry"
+            eyebrow="Youth Community"
             title={
               <>
                 청년목회자, 청년선교사를 위한
