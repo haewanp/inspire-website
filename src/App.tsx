@@ -74,6 +74,7 @@ type SplitSectionProps = {
   eyebrow: string;
   title: React.ReactNode;
   body: string;
+  note?: string;
   image: string;
   imageAlt: string;
 };
@@ -85,12 +86,12 @@ const menu: MenuSection[] = [
     items: ["Vision & Mission", "대표 소개", "FAQ"],
   },
   {
-    title: "For One Soul",
+    title: "for one SOUL",
     highlight: "예배와 말씀, 제자훈련 중심 사역",
     items: ["서울화요말씀집회", "제자훈련"],
   },
   {
-    title: "For All Church",
+    title: "for CHURCH",
     highlight: "교회와 선교 현장을 돕는 지원 사역",
     items: ["청년공동체 제자훈련 지원", "청년사역자, 해외선교사 지원"],
   },
@@ -242,16 +243,16 @@ function SiteHeader({
                 <div className="grid grid-cols-[280px_1fr] gap-12">
                   <div className="border-r border-[#7FA7C9]/35 pr-8">
                     <p className="text-xs uppercase tracking-[0.2em] text-[#7FA7C9]">{menu[hoveredIndex].title}</p>
-                    {["About", "For One Soul", "For All Church", "Join Us"].includes(menu[hoveredIndex].title) ? (
+                    {["About", "for one SOUL", "for CHURCH", "Join Us"].includes(menu[hoveredIndex].title) ? (
                       <button
                         type="button"
                         onClick={() =>
                           navigateTo(
                             menu[hoveredIndex].title === "About"
                               ? "about"
-                              : menu[hoveredIndex].title === "For One Soul"
+                              : menu[hoveredIndex].title === "for one SOUL"
                                 ? "for-one-soul"
-                                : menu[hoveredIndex].title === "For All Church"
+                                : menu[hoveredIndex].title === "for CHURCH"
                                   ? "for-all-church"
                                   : "join-us",
                           )
@@ -462,7 +463,7 @@ function SectionTabs({ items, activeSection, onSelect }: SectionTabsProps) {
   );
 }
 
-function SplitSection({ id, sectionRef, eyebrow, title, body, image, imageAlt }: SplitSectionProps) {
+function SplitSection({ id, sectionRef, eyebrow, title, body, note, image, imageAlt }: SplitSectionProps) {
   return (
     <section ref={sectionRef} id={id} className="mx-auto max-w-7xl px-8 py-16 lg:px-16 lg:py-24">
       <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
@@ -470,6 +471,7 @@ function SplitSection({ id, sectionRef, eyebrow, title, body, image, imageAlt }:
           <p className="text-sm uppercase tracking-[0.25em] text-[#0C63AB]">{eyebrow}</p>
           <h2 className="mt-5 text-4xl font-light leading-tight lg:text-5xl">{title}</h2>
           <p className="mt-6 text-base leading-relaxed text-[#4A6787] lg:text-lg">{body}</p>
+          {note && <p className="mt-4 text-sm leading-relaxed text-[#4A6787] lg:text-base">{note}</p>}
         </div>
 
         <div className="overflow-hidden bg-[#FFFDF6] shadow-sm">
@@ -576,6 +578,27 @@ function AboutPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
           imageAlt="대표 소개"
         />
 
+        <section aria-label="대표 경력 및 학력" className="mx-auto max-w-7xl px-8 pb-16 lg:px-16 lg:pb-24">
+          <div className="grid gap-10 border-t border-[#7FA7C9]/45 pt-10 md:grid-cols-2 md:gap-12">
+            <div>
+              <h4 className="text-lg font-medium">경력 및 사역</h4>
+              <ul className="mt-4 space-y-1 text-sm leading-7 text-[#4A6787] lg:text-base">
+                <li>(현) 인스파이어 대표</li>
+                <li>(현) 포항택전교회 협동목사</li>
+                <li>(전) 사랑의교회 부목사 대학 7부 &amp; 대청부 담당</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-medium">학력</h4>
+              <ul className="mt-4 space-y-1 text-sm leading-7 text-[#4A6787] lg:text-base">
+                <li>고려대학교 전기∙전자∙전파 공학부 졸업.</li>
+                <li>총신대학교 신학대학원 목회학 석사(M. Div.) 졸업.</li>
+                <li>총신대학교 일반대학원 역사신학 석사(Th. M.) 수료.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <section ref={registerRef("faq")} id="faq" className="mx-auto max-w-6xl px-6 py-20">
           <div className="max-w-3xl">
             <p className="text-sm uppercase tracking-[0.3em] text-[#0C63AB]">FAQ</p>
@@ -637,8 +660,8 @@ function ForOneSoulPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
           eyebrow="Seoul Bible Worship"
           title="한 영혼을 말씀전문가로 양성하는 Inspire 정기말씀집회"
           body="인스파이어 서울말씀집회는 하나님의 말씀을 더욱 깊이 연구하고 지켜내기 위한 인스파이어 정기집회입니다.
-          하나님의 말씀으로 한 영혼이 충만히 채워져 늘 새 힘과 능력으로 우리 교회들을 세우고 부흥시키기를 소망합니다.
-          ★ 서울말씀집회를 시작으로 각 지역말씀집회로 확장될 예정입니다"
+          하나님의 말씀으로 한 영혼이 충만히 채워져 늘 새 힘과 능력으로 우리 교회들을 세우고 부흥시키기를 소망합니다."
+          note="★ 서울말씀집회를 시작으로 각 지역말씀집회로 확장될 예정입니다"
           image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1400&q=80"
           imageAlt="서울화요말씀집회"
         />
@@ -880,10 +903,10 @@ export default function ChurchHomepageMockup() {
       "About:Vision & Mission": { route: "about", section: "vision-mission" },
       "About:대표 소개": { route: "about", section: "representative" },
       "About:FAQ": { route: "about", section: "faq" },
-      "For One Soul:서울화요말씀집회": { route: "for-one-soul", section: "seoul-tuesday-service" },
-      "For One Soul:제자훈련": { route: "for-one-soul", section: "discipleship" },
-      "For All Church:청년공동체 제자훈련 지원": { route: "for-all-church", section: "youth-training" },
-      "For All Church:청년사역자, 해외선교사 지원": { route: "for-all-church", section: "mission-support" },
+      "for one SOUL:서울화요말씀집회": { route: "for-one-soul", section: "seoul-tuesday-service" },
+      "for one SOUL:제자훈련": { route: "for-one-soul", section: "discipleship" },
+      "for CHURCH:청년공동체 제자훈련 지원": { route: "for-all-church", section: "youth-training" },
+      "for CHURCH:청년사역자, 해외선교사 지원": { route: "for-all-church", section: "mission-support" },
       "Join Us:후원하기": { route: "join-us", section: "support" },
     };
     return map[`${sectionTitle}:${item}`] ?? null;
