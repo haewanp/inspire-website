@@ -398,9 +398,9 @@ function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 lg:grid-cols-[1fr_1fr] lg:px-10">
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-[#5E7C9D]">Inspire Ministry</p>
-          <h4 className="mt-4 text-2xl font-light">복음으로 한 영혼과 교회를 세우는 사역</h4>
+          <h4 className="mt-4 text-2xl font-light">Inspire a Soul with the Word Inspire all Church with a Soul</h4>
           <p className="mt-4 max-w-xl leading-7 text-[#4A6787]">
-            실제 운영 시에는 이 자리에 주소, 대표 이메일, 전화번호, 후원 계좌, 예배 장소, 저작권 정보를 넣으면 됩니다.
+            인스파이어(inspire)는 하나님의 말씀을 통해 한 영혼을 일깨우고(inspire), 그를 통해 모든 교회를 격려하여(inspire) 건강하게 세우는 말씀사역단체입니다.
           </p>
         </div>
 
@@ -498,7 +498,12 @@ function useSectionNavigation(defaultSection: Exclude<SectionKey, null>) {
 
   React.useEffect(() => {
     const handleHashScroll = () => {
-      const hash = (typeof window !== "undefined" ? window.location.hash.replace("#", "") : "") || defaultSection;
+      const hash = window.location.hash.slice(1);
+      if (pageRoutes.includes(hash as RouteKey)) {
+        setActiveSection(null);
+        window.scrollTo({ top: 0, behavior: "auto" });
+        return;
+      }
       const next = refs.current[hash];
       if (next) {
         next.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -656,7 +661,7 @@ function ForOneSoulPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
 
         <SplitSection
           id="seoul-tuesday-service"
-          sectionRef={{ current: null }}
+          sectionRef={registerRef("seoul-tuesday-service")}
           eyebrow="Seoul Bible Worship"
           title="한 영혼을 말씀전문가로 양성하는 Inspire 정기말씀집회"
           body="인스파이어 서울말씀집회는 하나님의 말씀을 더욱 깊이 연구하고 지켜내기 위한 인스파이어 정기집회입니다.
@@ -665,7 +670,6 @@ function ForOneSoulPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
           image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1400&q=80"
           imageAlt="서울화요말씀집회"
         />
-        <section ref={registerRef("seoul-tuesday-service")} />
 
         <section className="bg-[#F7F4D6] py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -886,16 +890,12 @@ const sectionRoutes: Record<Exclude<SectionKey, null>, RouteKey> = {
   support: "join-us",
 };
 
-const defaultRouteSections: Record<Exclude<RouteKey, "home">, Exclude<SectionKey, null>> = {
-  about: "vision-mission",
-  "for-one-soul": "seoul-tuesday-service",
-  "for-all-church": "youth-training",
-  "join-us": "support",
-};
+const pageRoutes: RouteKey[] = ["about", "for-one-soul", "for-all-church", "join-us"];
 
 function getRouteFromHash(): RouteKey {
   if (typeof window === "undefined") return "home";
   const section = window.location.hash.slice(1);
+  if (pageRoutes.includes(section as RouteKey)) return section as RouteKey;
   return Object.prototype.hasOwnProperty.call(sectionRoutes, section)
     ? sectionRoutes[section as Exclude<SectionKey, null>]
     : "home";
@@ -920,8 +920,8 @@ export default function ChurchHomepageMockup() {
   const storyCarouselRef = React.useRef<HTMLDivElement | null>(null);
 
   const navigateTo = (nextRoute: RouteKey, section: SectionKey = null) => {
-    const targetSection = nextRoute === "home" ? null : section ?? defaultRouteSections[nextRoute];
-    const nextHash = targetSection ? `#${targetSection}` : "";
+    const targetSection = nextRoute === "home" ? null : section;
+    const nextHash = nextRoute === "home" ? "" : `#${targetSection ?? nextRoute}`;
     if (window.location.hash !== nextHash) {
       window.history.pushState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
     }
@@ -931,11 +931,8 @@ export default function ChurchHomepageMockup() {
     setOpenIndex(null);
 
     requestAnimationFrame(() => {
-      if (targetSection) {
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-        return;
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+      if (!targetSection) window.scrollTo({ top: 0, behavior: "auto" });
     });
   };
 
