@@ -445,7 +445,7 @@ function PageHero({ eyebrow, title, description, image, imageAlt }: HeroPageProp
 function SectionTabs({ items, activeSection, onSelect }: SectionTabsProps) {
   return (
     <section className="border-b border-[#7FA7C9]/35 bg-[#FFFDF6]">
-      <div className="mx-auto flex max-w-7xl gap-6 px-6 py-5 lg:px-10">
+      <div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-x-6 gap-y-3 px-6 py-5 text-center lg:px-10">
         {items.map((item) => (
           <button
             key={item.key}
@@ -471,7 +471,7 @@ function SplitSection({ id, sectionRef, eyebrow, title, body, note, image, image
           <p className="text-sm uppercase tracking-[0.25em] text-[#0C63AB]">{eyebrow}</p>
           <h2 className="mt-5 text-4xl font-light leading-tight lg:text-5xl">{title}</h2>
           <p className="mt-6 text-base leading-relaxed text-[#4A6787] lg:text-lg">{body}</p>
-          {note && <p className="mt-4 text-sm leading-relaxed text-[#4A6787] lg:text-base">{note}</p>}
+          {note && <p className="mt-4 text-xs leading-relaxed text-[#4A6787] lg:text-sm">{note}</p>}
         </div>
 
         <div className="overflow-hidden bg-[#FFFDF6] shadow-sm">
@@ -875,8 +875,44 @@ function JoinUsPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
   );
 }
 
+const sectionRoutes: Record<Exclude<SectionKey, null>, RouteKey> = {
+  "vision-mission": "about",
+  representative: "about",
+  faq: "about",
+  "seoul-tuesday-service": "for-one-soul",
+  discipleship: "for-one-soul",
+  "youth-training": "for-all-church",
+  "mission-support": "for-all-church",
+  support: "join-us",
+};
+
+const defaultRouteSections: Record<Exclude<RouteKey, "home">, Exclude<SectionKey, null>> = {
+  about: "vision-mission",
+  "for-one-soul": "seoul-tuesday-service",
+  "for-all-church": "youth-training",
+  "join-us": "support",
+};
+
+function getRouteFromHash(): RouteKey {
+  if (typeof window === "undefined") return "home";
+  const section = window.location.hash.slice(1);
+  return Object.prototype.hasOwnProperty.call(sectionRoutes, section)
+    ? sectionRoutes[section as Exclude<SectionKey, null>]
+    : "home";
+}
+
 export default function ChurchHomepageMockup() {
-  const [route, setRoute] = React.useState<RouteKey>("home");
+  const [route, setRoute] = React.useState<RouteKey>(getRouteFromHash);
+
+  React.useEffect(() => {
+    const syncRoute = () => setRoute(getRouteFromHash());
+    window.addEventListener("hashchange", syncRoute);
+    window.addEventListener("popstate", syncRoute);
+    return () => {
+      window.removeEventListener("hashchange", syncRoute);
+      window.removeEventListener("popstate", syncRoute);
+    };
+  }, []);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [openIndex, setOpenIndex] = React.useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
@@ -884,14 +920,19 @@ export default function ChurchHomepageMockup() {
   const storyCarouselRef = React.useRef<HTMLDivElement | null>(null);
 
   const navigateTo = (nextRoute: RouteKey, section: SectionKey = null) => {
+    const targetSection = nextRoute === "home" ? null : section ?? defaultRouteSections[nextRoute];
+    const nextHash = targetSection ? `#${targetSection}` : "";
+    if (window.location.hash !== nextHash) {
+      window.history.pushState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
+    }
     setRoute(nextRoute);
     setHoveredIndex(null);
     setMobileOpen(false);
     setOpenIndex(null);
 
     requestAnimationFrame(() => {
-      if (["about", "for-one-soul", "for-all-church", "join-us"].includes(nextRoute) && section) {
-        window.location.hash = section;
+      if (targetSection) {
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
         return;
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
