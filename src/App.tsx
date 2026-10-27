@@ -70,7 +70,7 @@ type HeroPageProps = {
 
 type SplitSectionProps = {
   id: string;
-  sectionRef?: React.RefObject<HTMLElement | null>;
+  sectionRef?: React.Ref<HTMLElement>;
   eyebrow: string;
   title: React.ReactNode;
   body: string;
@@ -565,7 +565,7 @@ function AboutPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
 
         <SplitSection
           id="representative"
-          sectionRef={{ current: null }}
+          sectionRef={registerRef("representative")}
           eyebrow="Representative"
           title="Who We Are"
           body="샬롬! 인스파이어 대표 김세형 목사입니다. 오랜시간 청년사역의 현장에서 깨닫게 된 진리는 우리 하나님은 전능하신 분이라는 것입니다. 
@@ -575,8 +575,6 @@ function AboutPage({ ...headerProps }: Omit<HeaderProps, "showHero">) {
           image="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1400&q=80"
           imageAlt="대표 소개"
         />
-
-        <section ref={registerRef("representative")} />
 
         <section ref={registerRef("faq")} id="faq" className="mx-auto max-w-6xl px-6 py-20">
           <div className="max-w-3xl">
